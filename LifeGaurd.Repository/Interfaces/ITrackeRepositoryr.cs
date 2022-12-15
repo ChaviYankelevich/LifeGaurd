@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace LifeGaurd.Repositories.Interfaces
 {
-    public interface IPool
+    public interface ITrackeRepositoryr
     {
-        Task<DbSet<Pool>> GetAllAsync();
-        Task<Pool> GetByIdAsync(int Id);
-        Task<Pool> AddAsync(int PoolId, User User, int WaterContour);       
-        Task<Pool> UpdateAsync(Pool u);
+        Task<DbSet<Tracker>> GetAllAsync();
+        Task<Tracker> GetByIdAsync(int Id);
+
+        Task<Tracker> AddAsync(int TrackerId, Pool Pool, Contour TrackerCourter, EStatus Status);
+        
+        Task<Tracker> UpdateAsync(Tracker t);
         Task DeleteAsync(int id);
     }
 }

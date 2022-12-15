@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LifeGaurd.Repositories.Repositories
 {
-    public class ContourRepository : IContour
+    public class ContourRepository : IcontourRepository
     {
         private readonly IContext _context;
 
@@ -20,31 +20,40 @@ namespace LifeGaurd.Repositories.Repositories
         {
             _context = context;
         }
-        public Task<Contour> AddAsync(int ContourId, int W, int X, int Y, int Z)
+        public async Task<Contour> AddAsync(int ContourId, int W, int X, int Y, int Z)
         {            
             var added = _context.Contours.Add(new Contour { ContourId = ContourId, W = W, X=X, Y=Y,Z=Z });
             await _context.SaveChangesAsync();
             return added.Entity;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Contour c = _context.Contours.ToList<Contour>().Find(r => r.ContourId == id);
+            _context.Contours.Remove(c);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<DbSet<Entities.Contour>> GetAllAsync()
+        public async Task<DbSet<Contour>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Contours;
         }
 
-        public Task<Entities.Contour> GetByIdAsync(int Id)
+        public async Task<Contour> GetByIdAsync(int Id)
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Contours.ToList<Contour>().Find(r => r.ContourId == Id);
         }
 
-        public Task<Entities.Contour> UpdateAsync(Entities.Contour u)
+        public async Task<Contour> UpdateAsync(Contour c)
         {
-            throw new NotImplementedException();
+            _context.Contours.ToList<Contour>().Find(r => r.ContourId == c.ContourId).W = c.W;
+            _context.Contours.ToList<Contour>().Find(r => r.ContourId == c.ContourId).X = c.X;
+            _context.Contours.ToList<Contour>().Find(r => r.ContourId == c.ContourId).Y = c.Y;
+            _context.Contours.ToList<Contour>().Find(r => r.ContourId == c.ContourId).Z = c.Z;
+            await _context.SaveChangesAsync();
+            return c;
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LifeGaurd.Repositories.Repositories
 {
-    public class PoolRepository : IPool
+    public class PoolRepository : IPoolRepository
     {
         private readonly IContext _context;
 
@@ -17,29 +17,38 @@ namespace LifeGaurd.Repositories.Repositories
         {
             _context = context;
         }
-        public Task<Pool> AddAsync(int PoolId, User User, int WaterContour)
+        public async Task<Pool> AddAsync(int PoolId, User User, int WaterContour)
         {
-            throw new NotImplementedException();
+            var added = _context.Pools.Add(new Pool { PoolId = PoolId,User=User,WaterContour=WaterContour  });
+            await _context.SaveChangesAsync();
+            return added.Entity;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Pool c = _context.Pools.ToList<Pool>().Find(r => r.PoolId == id);
+            _context.Pools.Remove(c);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<DbSet<Pool>> GetAllAsync()
+        public async Task<DbSet<Pool>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Pools;
         }
 
-        public Task<Pool> GetByIdAsync(int Id)
+        public async Task<Pool> GetByIdAsync(int Id)
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Pools.ToList<Pool>().Find(r => r.PoolId == Id);
         }
 
-        public Task<Pool> UpdateAsync(Pool u)
+        public async Task<Pool> UpdateAsync(Pool p)
         {
-            throw new NotImplementedException();
+            _context.Pools.ToList<Pool>().Find(r => r.PoolId == p.PoolId).User = p.User;
+            _context.Pools.ToList<Pool>().Find(r => r.PoolId == p.PoolId).WaterContour = p.WaterContour;
+            await _context.SaveChangesAsync();
+            return p;
         }
     }
 }

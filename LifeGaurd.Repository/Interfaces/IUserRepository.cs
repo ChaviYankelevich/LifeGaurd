@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LifeGaurd.Repositories.Interfaces
 {
-    public interface IUser
+    public interface IUserRepository
     {
         Task<DbSet<User>> GetAllAsync();
         Task<User> GetByIdAsync(int Id);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LifeGaurd.Repositories.Repositories
 {
-    public class TrackerRepository : ITracker
+    public class TrackerRepository : ITrackeRepositoryr
     {
         private readonly IContext _context;
 
@@ -18,29 +18,40 @@ namespace LifeGaurd.Repositories.Repositories
             _context = context;
         }
 
-        public Task<Tracker> AddAsync(int TrackerId, Pool Pool, Contour TrackerCourter, EStatus Status)
+        public async Task<Tracker> AddAsync(int TrackerId, Pool Pool, Contour TrackerCourter, EStatus Status)
         {
-            throw new NotImplementedException();
+            var added = _context.Trackers.Add(new Tracker { TrackerId = TrackerId, TrackerCourter=TrackerCourter, Status = Status });
+            await _context.SaveChangesAsync();
+            return added.Entity;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Tracker t = _context.Trackers.ToList<Tracker>().Find(r => r.TrackerId == id);
+            _context.Trackers.Remove(t);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<DbSet<Tracker>> GetAllAsync()
+        public async Task<DbSet<Tracker>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Trackers;
         }
 
-        public Task<Tracker> GetByIdAsync(int Id)
+        public async Task<Tracker> GetByIdAsync(int Id)
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
+            return _context.Trackers.ToList<Tracker>().Find(r => r.TrackerId == Id);
         }
 
-        public Task<Tracker> UpdateAsync(Tracker u)
+        public async Task<Tracker> UpdateAsync(Tracker t)
         {
-            throw new NotImplementedException();
+            _context.Trackers.ToList<Tracker>().Find(r => r.TrackerId == t.TrackerId).Pool = t.Pool;
+            _context.Trackers.ToList<Tracker>().Find(r => r.TrackerId == t.TrackerId).TrackerCourter = t.TrackerCourter;
+            _context.Trackers.ToList<Tracker>().Find(r => r.TrackerId == t.TrackerId).Status = t.Status;
+            
+            await _context.SaveChangesAsync();
+            return t;
         }
     }
 }
